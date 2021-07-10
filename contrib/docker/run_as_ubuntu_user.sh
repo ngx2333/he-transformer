@@ -61,7 +61,7 @@ else
     # choose to change it here, then you need to change it in all other
     # scripts, or else the builds will break.
     #
-    DOCK_USER='dockuser'
+    DOCK_USER='ngx'
 
     # We will be su'ing using a non-login shell or command, and preserving
     # the environment.  This is done so that env. variables passed in with
