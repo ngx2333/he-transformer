@@ -43,7 +43,7 @@ DOCKUSER_HOME=/home/ngx
 
 # Use /home/dockuser/he-transformer-test, because we run as the user (and not root)
 # /root/he-transformer-test is not used, because /root is not accessible to user
-VOLUME = -v "${DIR}:${DOCKUSER_HOME}/he-transformer-test"
+VOLUME = -v "${DIR}:${DOCKUSER_HOME}/he-transformer"
 GIT_COMMIT = $(shell git rev-parse HEAD)
 DBUILD_VERSION = ${GIT_COMMIT}_${PYTHON_VERSION}
 
