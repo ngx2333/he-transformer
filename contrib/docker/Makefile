@@ -39,7 +39,7 @@ DIR = $(realpath ../..)
 # first-class user (/etc/passwd entry, member of sudo group, proper home dir)
 # /home/dockuser is also used in other scripts, notably run_as_user.sh, so if
 # changed it must be done in other areas for the builds to work.
-DOCKUSER_HOME=/home/dockuser
+DOCKUSER_HOME=/home/ngx
 
 # Use /home/dockuser/he-transformer-test, because we run as the user (and not root)
 # /root/he-transformer-test is not used, because /root is not accessible to user
@@ -73,22 +73,22 @@ DBUILD_DIR = ${DIR}/contrib/docker/.build-${DBUILD_VERSION}_${OS_ID}
 
 # Configuration for specific reference OS_ID in Dockerfiles
 ifeq ("$(shell echo ${OS_ID} | grep centos)","centos74")
-    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer-test/contrib/docker/run_as_centOS_ID_user.sh
+    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer/contrib/docker/run_as_centOS_ID_user.sh
     DOCKERFILE=Dockerfile.he_transformer.centOS_ID74
 endif
 
 ifeq ("$(shell echo ${OS_ID} | grep fedora)","fedora28")
-    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer-test/contrib/docker/run_as_fedora_user.sh
+    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer/contrib/docker/run_as_fedora_user.sh
     DOCKERFILE=Dockerfile.he_transformer.fedora28
 endif
 
 ifeq ("$(shell echo ${OS_ID} | grep ubuntu)","ubuntu1804")
-    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer-test/contrib/docker/run_as_ubuntu_user.sh
+    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer/contrib/docker/run_as_ubuntu_user.sh
 		DOCKERFILE=Dockerfile.he_transformer.ubuntu1804
 endif
 
 ifeq ("$(shell echo ${OS_ID} | grep ubuntu)","ubuntu1604")
-    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer-test/contrib/docker/run_as_ubuntu_user.sh
+    RUN_AS_USER_SCRIPT=${DOCKUSER_HOME}/he-transformer/contrib/docker/run_as_ubuntu_user.sh
 		DOCKERFILE=Dockerfile.he_transformer.ubuntu1604
 endif
 
@@ -98,8 +98,8 @@ DOCKER_CMD=docker
 # For gcc builds, we do NOT regard warnings as errors
 # For clang builds, we DO make warnings into errors
 CMAKE_OPTIONS_COMMON=-DNGRAPH_BUILD_DOXYGEN_DOCS=ON -DNGRAPH_BUILD_SPHINX_DOCS=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo $(CMAKE_OPTIONS_EXTRA)
-CMAKE_OPTIONS_GCC=$(CMAKE_OPTIONS_COMMON) -DCMAKE_INSTALL_PREFIX=${DOCKUSER_HOME}/he-transformer-test/BUILD-GCC/he_transformer_dist
-CMAKE_OPTIONS_CLANG=$(MAKE_OPTIONS_COMMON)-DCMAKE_INSTALL_PREFIX=${DOCKUSER_HOME}/he-transformer-test/BUILD-CLANG/he_transformer_dist -DCMAKE_CXX_COMPILER=clang++-3.9 -DCMAKE_C_COMPILER=clang-3.9 -DNGRAPH_WARNINGS_AS_ERRORS=ON -DNGRAPH_USE_PREBUILT_LLVM=TRUE
+CMAKE_OPTIONS_GCC=$(CMAKE_OPTIONS_COMMON) -DCMAKE_INSTALL_PREFIX=${DOCKUSER_HOME}/he-transformer/BUILD-GCC/he_transformer_dist
+CMAKE_OPTIONS_CLANG=$(MAKE_OPTIONS_COMMON)-DCMAKE_INSTALL_PREFIX=${DOCKUSER_HOME}/he-transformer/BUILD-CLANG/he_transformer_dist -DCMAKE_CXX_COMPILER=clang++-3.9 -DCMAKE_C_COMPILER=clang-3.9 -DNGRAPH_WARNINGS_AS_ERRORS=ON -DNGRAPH_USE_PREBUILT_LLVM=TRUE
 
 CALLER_UID := $(shell id -u)
 CALLER_GID := $(shell id -g)
@@ -164,7 +164,7 @@ build_gcc: build_docker_image
 	    --env THIRD_PARTY_CACHE_DIR=${THIRD_PARTY_CACHE_DIR} \
 	    --env CMD_TO_RUN='build_gcc' \
             --env RUN_UID="$(shell id -u)" \
-            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer-test/contrib/docker/build-he-transformer-and-test.sh" \
+            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer/contrib/docker/build-he-transformer-and-test.sh" \
             "build_he_transformer_${OS_ID}:${DBUILD_VERSION}" \
 	    sh -c "cd ${DOCKUSER_HOME}; ${RUN_AS_USER_SCRIPT}"
 
@@ -184,7 +184,7 @@ build_clang: build_docker_image
 	    --env THIRD_PARTY_CACHE_DIR=${THIRD_PARTY_CACHE_DIR} \
 	    --env CMD_TO_RUN='build_clang' \
             --env RUN_UID="$(shell id -u)" \
-            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer-test/contrib/docker/build-he-transformer-and-test.sh" \
+            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer/contrib/docker/build-he-transformer-and-test.sh" \
             "build_he_transformer_${OS_ID}:${DBUILD_VERSION}" \
 	    sh -c "cd ${DOCKUSER_HOME}; ${RUN_AS_USER_SCRIPT}"
 
@@ -204,7 +204,7 @@ check_gcc: build_gcc
 	    --env THIRD_PARTY_CACHE_DIR=${THIRD_PARTY_CACHE_DIR} \
 	    --env CMD_TO_RUN=check_gcc \
             --env RUN_UID="$(shell id -u)" \
-            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer-test/contrib/docker/build-he-transformer-and-test.sh" \
+            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer/contrib/docker/build-he-transformer-and-test.sh" \
             "build_he_transformer_${OS_ID}:${DBUILD_VERSION}" \
 	    sh -c "cd ${DOCKUSER_HOME}; ${RUN_AS_USER_SCRIPT}"
 
@@ -221,7 +221,7 @@ check_clang: build_clang
 	    --env THIRD_PARTY_CACHE_DIR=${THIRD_PARTY_CACHE_DIR} \
 	    --env CMD_TO_RUN=check_clang \
             --env RUN_UID="$(shell id -u)" \
-            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer-test/contrib/docker/build-he-transformer-and-test.sh" \
+            --env RUN_CMD="${DOCKUSER_HOME}/he-transformer/contrib/docker/build-he-transformer-and-test.sh" \
             "build_he_transformer_${OS_ID}:${DBUILD_VERSION}" \
 	    sh -c "cd ${DOCKUSER_HOME}; ${RUN_AS_USER_SCRIPT}"
 
